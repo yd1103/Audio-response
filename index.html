@@ -23,10 +23,10 @@ var timeline = [];
 // welcome
 var welcome_block = {
   type: 'html-button-response',
-  stimulus: '<p style="color: #505050; font-size: 24px;">欢迎参加浙江大学光电学院颜色工程实验室的实验，</p>. '+
-  '<p style="color: #505050; font-size: 24px;">请到一个全黑环境，并将屏幕亮度调至“最亮”，</p>. '+
-  '<p style="color: #505050; font-size: 24px;">将笔记本电脑插上耳机并将音量调至“50”，</p>. '+
-  '<p style="color: #505050; font-size: 24px;">完成后请点下方“继续”按钮。</p>. ',
+  stimulus: '<p style="color: #505050; font-size: 24px;">====欢迎参加浙江大学光电学院颜色工程实验室的实验====///</p>. '+
+  '<p style="color: #505050; font-size: 24px;">===请到一个全黑环境，并将屏幕亮度调至“最亮”===</p>.// '+
+  '<p style="color: #505050; font-size: 24px;">==将笔记本电脑插上耳机并将音量调至“50”==/</p>. '+
+  '<p style="color: #505050; font-size: 24px;">=完成后请点下方“继续”按钮=</p>. ',
   choices: ['继续']
 }; 
 
@@ -82,7 +82,7 @@ var trial = {
     stimulus: jsPsych.timelineVariable('audio'),
     choices: jsPsych.timelineVariable('choices'),
     margin_horizontal: "20px",
-    button_html: '<button class="jspsych-btn" style="background-color:#505050; border-color:black; width: 200px; font-size: 24px">%choice%</button>',
+    button_html: '<button class="jspsych-btn" style="background-color:#505050; border-color:black; width: 160px; font-size: 16px">%choice%</button>',
     prompt: '<p style="color: #505050; font-size: 24px;"><p>你认为，哪一种情绪更接近这段音乐?</p>',
     post_trial_gap: 5000
   }]
