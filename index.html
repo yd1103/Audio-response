@@ -16,6 +16,35 @@
 
 var timeline = [];
 
+var sound_block = {
+        type: 'single-audio',
+        stimulus: 'jspsych-6-2/examples/sound/autumn_cut1.wav',
+        prompt: "Hit Space to Begin"
+    };
+
+  timeline.push(sound_block);
+
+  var trail_one = {
+    type:'html-button-response',
+    stimulus: '<p>Active or Passive?</p>',
+    choices: ['Active', 'Passive'],
+    prompt: "<p>Active or Passive?</p>",
+  };
+
+  var trail_two = {
+    type:'html-button-response',
+    stimulus: '<p>Agitated or Calm?</p>',
+    choices: ['Agitated', 'Calm'],
+    prompt: "<p>Agitated or Calm?</p>"
+  };   
+  
+  // experiment start
+ // timeline.push(repeat);
+ // timeline.push(audio_play);
+  timeline.push(trail_one);
+  timeline.push(trail_two);
+ // timeline.push(trails);  
+  
 var trial_parameters = [
   { audio: 'audio/autumn_cut1.wav', choices: ['Active','Passive']},
   { audio: 'audio/autumn_cut1.wav', choices: ['Agitated','Calm']},
