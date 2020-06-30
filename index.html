@@ -5,7 +5,6 @@
   <script src="jspsych/plugins/jspsych-html-button-response.js"></script>
   <script src="jspsych/plugins/jspsych-instructions.js"></script>
   <script src="jspsych/plugins/jspsych-fullscreen.js"></script>
-  <script src="jspsych/plugins/jspsych-single-audio.js"><</script>
   <script src="jspsych/plugins/jspsych-audio-button-response.js"></script>
   <link rel="stylesheet" type="text/css" href="jspsych/css/jspsych.css"></link>
   <style>
@@ -68,18 +67,6 @@ var fullscreen_trial = {
 }
 
 timeline.push(fullscreen_trial);
-  
-  
-var sounds = ['sound/autumn_cut1.mp3', 'sound/autumn_cut2.mp3'];
-var sound_trial = {
-        type: 'single-audio',
-        stimulus: sounds[0],
-        prompt: "Hit Space to Begin"
-    };
-
-    timeline.push(sound_trial);
-
-
   
 var trial_parameters = [
   { audio: 'audio/autumn_cut1.wav', choices: ['(3)非常积极主动','(2)积极主动','(1)比较积极主动','(0)中性','(-1)比较消极被动','（-2)消极被动','（-3）非常消极被动'], prompt: ['第一首歌-第一小段']},
