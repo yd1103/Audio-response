@@ -2,12 +2,14 @@
 <html>
 <head>
   <script src="jspsych/jspsych.js"></script>
+  <script src="jspsych/plugins/jspsych-html-button-response.js"></script>
+  <script src="jspsych/plugins/jspsych-instructions.js"></script>
   <script src="jspsych/plugins/jspsych-audio-button-response.js"></script>
   <script src="jspsych/plugins/jspsych-fullscreen.js"></script>
   <link rel="stylesheet" type="text/css" href="jspsych/css/jspsych.css"></link>
   <style>
         div{
-            background: #222;
+            background: #333;
         }
     </style>
 </head>
@@ -18,6 +20,31 @@
 
 var timeline = [];
   
+// welcome
+var welcome_block = {
+  type: 'html-button-response',
+  stimulus: '<p style="color: white; font-size: 24px;"> 实验开始时，你听到一段音频，请根据你的感受选择你认为更匹配的形容词，都点选完毕后按下“下一页”按钮，进入下一段测试</p>. '+
+  'Clicking the button below counts as an interaction. Be aware of this when planning audio experiments if '+
+  'you want the first trial to include audio.',
+  choices: ['Continue']
+}; 
+
+timeline.push(welcome_block);
+
+// instructions  
+var instruction_block = {
+  type: 'instructions',
+  pages: ['<p style="color: white; font-size: 24px;"> 第一阶段</p>'+
+    '<p style="color: white; font-size: 24px;"> 你将会听到音频，请你在暗室当中，闭上眼睛聆听音乐</p>',
+    '<p style="color: white; font-size: 24px;"> 第二阶段</p>',
+    '<p style="color: white; font-size: 24px;"> +second+</p>'],
+  show_clickable_nav: true,
+  show_page_number: true
+};
+
+timeline.push(instruction_block);
+
+// make it fullscreen
 var fullscreen_trial = {
   type: 'fullscreen',
   fullscreen_mode: true
