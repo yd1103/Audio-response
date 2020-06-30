@@ -16,27 +16,6 @@
 <script>
 
 var timeline = [];
-
-  var trail_one = {
-    type:'html-button-response',
-    stimulus: '<p>Active or Passive?</p>',
-    choices: ['Active', 'Passive'],
-    prompt: "<p>Active or Passive?</p>",
-  };
-
-  var trail_two = {
-    type:'html-button-response',
-    stimulus: '<p>Agitated or Calm?</p>',
-    choices: ['Agitated', 'Calm'],
-    prompt: "<p>Agitated or Calm?</p>"
-  };   
-  
-  // experiment start
- // timeline.push(repeat);
- // timeline.push(audio_play);
-  timeline.push(trail_one);
-  timeline.push(trail_two);
- // timeline.push(trails);  
   
 var trial_parameters = [
   { audio: 'audio/autumn_cut1.wav', choices: ['Active','Passive']},
@@ -52,7 +31,7 @@ var trial = {
     stimulus: jsPsych.timelineVariable('audio'),
     choices: jsPsych.timelineVariable('choices'),
     margin_horizontal: "20px",
-    prompt: "<p>Active or Passive?</p>",
+    prompt: '<p style="color: white; font-size: 24px;"><p>Agitated or Calm?</p>',
     post_trial_gap: 500
   }]
 }
