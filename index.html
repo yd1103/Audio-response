@@ -17,10 +17,10 @@
 var timeline = [];
   
 var trial_parameters = [
-  { audio: 'audio/autumn_cut1.wav', choices: ['Active','Passive']},
-  { audio: 'audio/autumn_cut1.wav', choices: ['Agitated','Calm']},
-  { audio: 'audio/autumn_cut1.wav', choices: ['9', '10', '11', '12']},
-  { audio: 'audio/autumn_cut1.wav', choices: ['1', '5', '7', '11']}
+  { audio: 'audio/autumn_cut1.wav', choices: ['Active','Passive'], prompt: ['第一首歌-第一小段']},
+  { audio: 'audio/autumn_cut1.wav', choices: ['Agitated','Calm'], prompt: ['第一首歌-第一小段']},
+  { audio: 'audio/autumn_cut2.wav', choices: ['Active','Passive'], prompt: ['第一首歌-第二小段']},
+  { audio: 'audio/autumn_cut2.wav', choices: ['Agitated','Calm'], prompt: ['第一首歌-第二小段']}
 ]
 
 var trial = {
@@ -30,7 +30,7 @@ var trial = {
     stimulus: jsPsych.timelineVariable('audio'),
     choices: jsPsych.timelineVariable('choices'),
     margin_horizontal: "20px",
-    prompt: '<p style="color: white; font-size: 24px;"><p>Agitated or Calm?</p>',
+    prompt: '<p style="color: #FFFFFF; font-size: 24px;"><p>Agitated or Calm?</p>',
     post_trial_gap: 500
   }]
 }
