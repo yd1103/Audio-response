@@ -68,7 +68,8 @@ var fullscreen_trial = {
 }
 
 timeline.push(fullscreen_trial);
-
+  
+  
 var sounds = ['sound/autumn_cut1.mp3', 'sound/autumn_cut2.mp3'];
 var sound_trial = {
         type: 'single-audio',
@@ -94,6 +95,7 @@ var trial = {
     stimulus: jsPsych.timelineVariable('audio'),
     choices: jsPsych.timelineVariable('choices'),
     margin_horizontal: "20px",
+    button_html: '<button class="jspsych-btn" style="background-color:#505050; border-color:black; width: 200px; font-size: 24px">%choice%</button>',
     prompt: '<p style="color: #505050; font-size: 24px;"><p>你认为，哪一种情绪更接近这段音乐?</p>',
     post_trial_gap: 5000
   }]
