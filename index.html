@@ -4,6 +4,11 @@
   <script src="jspsych/jspsych.js"></script>
   <script src="jspsych/plugins/jspsych-audio-button-response.js"></script>
   <link rel="stylesheet" type="text/css" href="jspsych/css/jspsych.css"></link>
+  <style>
+        div{
+            background: #000;
+        }
+    </style>
 </head>
 <body>
 </body>
@@ -12,10 +17,10 @@
 var timeline = [];
 
 var trial_parameters = [
-  { audio: 'audio/autumn_cut1.wav', images: ['1', '2', '3', '4'], correct_choice: 0},
-  { audio: 'audio/autumn_cut1.wav', images: ['5', '6', '7', '8'], correct_choice: 1},
-  { audio: 'audio/autumn_cut1.wav', images: ['9', '10', '11', '12'], correct_choice: 2},
-  { audio: 'audio/autumn_cut1.wav', images: ['1', '5', '7', '11'], correct_choice: 3}
+  { audio: 'audio/autumn_cut1.wav', choices: ['Active','Passive']},
+  { audio: 'audio/autumn_cut1.wav', choices: ['Agitated','Calm']},
+  { audio: 'audio/autumn_cut1.wav', choices: ['9', '10', '11', '12']},
+  { audio: 'audio/autumn_cut1.wav', choices: ['1', '5', '7', '11']}
 ]
 
 var trial = {
@@ -23,10 +28,9 @@ var trial = {
   timeline: [{
     type: 'audio-button-response',
     stimulus: jsPsych.timelineVariable('audio'),
-    choices: jsPsych.timelineVariable('images'),
-    button_html: '<img style="width:100px;" onmouseover="this.src=\'img/%choice%-hover.gif\'" onmouseout="this.src=\'img/%choice%.gif\'" src="img/%choice%.gif" />',
+    choices: jsPsych.timelineVariable('choices'),
     margin_horizontal: "20px",
-    prompt: "<p>Please click the picture that matches the sound</p>",
+    prompt: "<p>Active or Passive?</p>",
     post_trial_gap: 500
   }]
 }
@@ -35,7 +39,6 @@ timeline.push(trial);
 jsPsych.init({
   timeline: timeline,
   preload_audio: ['audio/autumn_cut1.wav'],
-  preload_images: ['img/1.gif','img/2.gif', 'img/3.gif', 'img/4.gif', 'img/5.gif','img/6.gif', 'img/7.gif', 'img/8.gif','img/9.gif','img/10.gif', 'img/11.gif', 'img/12.gif']
 })
 
 </script>
