@@ -1,118 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <script src="jspsych/jspsych.js"></script>
-  <script src="jspsych/plugins/jspsych-html-button-response.js"></script>
-  <script src="jspsych/plugins/jspsych-instructions.js"></script>
-  <script src="jspsych/plugins/jspsych-fullscreen.js"></script>
-  <script src="jspsych/plugins/jspsych-audio-button-response.js"></script>
-  <link rel="stylesheet" type="text/css" href="jspsych/css/jspsych.css"></link>
-  <style>
-        div{
-            background: #222;
-        }
-    </style>
-</head>
-<body>
-  <body style="overflow:-Scroll;overflow-y:hidden" >
-  
-    
-  <audio controls>
-  <source src="audio/autumn1.wav" type="audio/mp3">
-  Your browser does not support the audio element.
-  </audio>
-    
-</body>
-<script>
-
-var timeline = [];
-  
-// welcome
-var welcome_block = {
-  type: 'html-button-response',
-  stimulus: '<p style="color: #505050; font-size: 24px;">====欢迎参加浙江大学光电学院颜色工程实验室的实验====</p>. '+
-  '<p style="color: #505050; font-size: 24px;">===请到一个全黑环境，并将屏幕亮度调至“最亮”===</p>. '+
-  '<p style="color: #505050; font-size: 24px;">==将笔记本电脑插上耳机并将音量调至“50”==</p>. '+
-  '<p style="color: #505050; font-size: 24px;">=完成后请点下方“继续”按钮=</p>. ',
-  choices: ['继续']
-}; 
-
-timeline.push(welcome_block);
-
-// instructions  
-var instruction_block = {
-  type: 'instructions',
-  pages: [
-  // page 1 第一阶段（测试）
-  '<p style="color: #505050; font-size: 24px;"> 第一阶段：音乐情绪实验(测试)：</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 实验开始时，你将听到一段音频，请根据你的感受选择你认为更匹配的形容词</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 每次作答之间会有五秒停顿，之后自动播放下一段音频</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 因此如果你想休息，可以记住答案，先不作答。</p>',
-  // page 2 第二阶段（音乐情绪选择）
-  '<p style="color: #505050; font-size: 24px;"> 第二阶段：音乐情绪实验(正式)：</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 此阶段方法与上一个阶段相同,</p>'+
-  '<p style="color: #505050; font-size: 24px;"> (实验开始时，你将听到一段音频，请根据你的感受选择你认为更匹配的形容词)</p>'+
-  '<p style="color: #505050; font-size: 24px;"> (每次作答之间会有五秒停顿，之后自动播放下一段音频)</p>'+
-  '<p style="color: #505050; font-size: 24px;"> (因此如果你想休息，可以记住答案，先不作答。)</p>',
-  // page 3 第三阶段（音乐与颜色变化）
-  '<p style="color: #505050; font-size: 24px;"> 第三阶段：音乐与颜色变化：</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 此阶段你将同时听到音频和屏幕的颜色变化</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 请根据你的感受，选择你认为更匹配的形容词</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 每次作答之间会有五秒停顿，之后自动播放下一段音频和颜色变化</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 因此如果你想休息，可以记住答案，先不作答。</p>',
-  ],
-  show_clickable_nav: true,
-  show_page_number: true
-};
-
-timeline.push(instruction_block);
-
-// make it fullscreen
-var fullscreen_trial = {
-  type: 'fullscreen',
-  fullscreen_mode: true
-}
-
-timeline.push(fullscreen_trial);
-  
-var trial_parameters = [
-  { audio: 'audio/autumn_cut1.wav', choices: ['(3)非常积极主动','(2)积极主动','(1)比较积极主动','(0)中性','(-1)比较消极被动','（-2)消极被动','（-3）非常消极被动'], prompt: ['第一首歌-第一小段']},
-  { audio: 'audio/autumn_cut1.wav', choices: ['Agitated','Calm'], prompt: ['第一首歌-第一小段']},
-  { audio: 'audio/autumn_cut2.wav', choices: ['Active','Passive'], prompt: ['第一首歌-第二小段']},
-  { audio: 'audio/autumn_cut2.wav', choices: ['Agitated','Calm'], prompt: ['第一首歌-第二小段']}
-]
-
-var trial = {
-  timeline_variables: trial_parameters,
-  timeline: [{
-    type: 'audio-button-response',
-    stimulus: jsPsych.timelineVariable('audio'),
-    choices: jsPsych.timelineVariable('choices'),
-    margin_horizontal: "20px",
-    button_html: '<button class="jspsych-btn" style="background-color:#505050; border-color:black; width: 120px; font-size: 12px">%choice%</button>',
-    prompt: '<p style="color: #505050; font-size: 24px;"><p>你认为，哪一种情绪更接近这段音乐?</p>',
-    post_trial_gap: 5000
-  },
-  {
-    type: 'audio-keyboard-response',
-    stimulus: jsPsych.timelineVariable('audio'),
-    loop_function: function(data){
-        if(jsPsych.pluginAPI.convertKeyCharacterToKeyCode('r') == data.values()[0].key_press){
-            return true;
-        } else {
-            return false;
-        }
-    }
-  }],
-};
-timeline.push(trial); 
-
-
-jsPsych.init({
-  timeline: timeline,
-  use_webaudio: false,
-  preload_audio: ['audio/autumn_cut1.wav','audio/autumn_cut2.wav','audio/autumn1.wav'],
-})
-
-</script>
+    <head>
+        <title>My experiment</title>
+		<script src="../jspsych.js"></script>
+		<script src="../plugins/jspsych-html-keyboard-response.js"></script>
+		<script src="../plugins/jspsych-audio-keyboard-response.js"></script>
+		<link href="../css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    </head>
+    <body></body>
+	<script>
+		//create timeline array//
+		var timeline = [];
+	
+		//welcome message//	
+		var welcome = {
+			type: 'html-keyboard-response',
+			stimulus: 'Welcome to the experiment! Press any key to begin.'
+		};
+		timeline.push(welcome);
+		
+		//description of what the subject is about to hear (habituation)//
+		var habituation_instructions = {
+			type: "html-keyboard-response",
+	    	stimulus: "<p>You are about to hear two types of tones, a short tone and a long tone.</p>" +
+	              "<p>After each tone, a screen will tell you what type of tone it was.</p>" +
+	              "<p>Press any key to begin.</p>"
+		};
+		timeline.push(habituation_instructions);
+		
+		//array for different habituation stimuli//
+		var habituation_stimuli = [
+		  { audio: "sound/autumn_cut1.mp3", prompt: 'This is a short tone.'},
+		  { audio: "sound/autumn_cut2.mp3", prompt: 'This is a long tone.'}
+		];
+		
+		//fixation cross for habituation (shorter)//
+		var habituation_fixation = {
+		  type: 'html-keyboard-response',
+		  stimulus: '<div style="font-size:60px;">+</div>',
+		  choices: jsPsych.NO_KEYS,
+		  trial_duration: 1500,
+		}
+		
+		var habituation = {
+		  type: "audio-keyboard-response",
+		  stimulus: jsPsych.timelineVariable('audio'),
+		  choices: jsPsych.NO_KEYS,
+			prompt: jsPsych.timelineVariable('prompt')
+		}
+		
+		var habituation_procedure = {
+		  timeline: [habituation_fixation, habituation],
+		  timeline_variables: habituation_stimuli,
+		  randomize_order: true,
+			repetitions: 3
+			
+		}
+		timeline.push(habituation_procedure);
+		
+		jsPsych.init({
+			timeline: timeline,
+			use_webaudio: false,
+			preload_audio: ['sound/autumn_cut1.mp3', 'sound/autumn_cut2.mp3']
+		})
+		
+	</script>
 </html>
