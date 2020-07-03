@@ -13,113 +13,11 @@
     <script src="jspsych/plugins/jspsych-survey-multi-choice.js"></script>
     <script src="jspsych/plugins/jspsych-html.js"></script>
     <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
-
-    <style>
-        html {
-            text-align: center;
-            font-family: 'Open Sans', 'Arial', sans-serif;
-            font-size: 24px;
-            line-height: 1.6em;
-            height: 100%;
-        }
-        div{
-            background: #000;
-        }
-        #jspsych-survey-text-next { text-align: center; font-size: 16px; height: 50px; width: 140px; }
-        #jspsych-button-response-button-0 {
-            text-align: center;
-            font-size: 16px; height: 50px; width: 140px; }
-        #jspsych-button-response-button-1 { text-align: center; font-size: 16px; position:relative; left: 15px;
-            height: 50px; width: 140px; }
-        .jspsych-survey-text-question textarea { text-align: center; font-size: 32px; }
-    </style>
-
 </head>
 <body>
 
 </body>
 <script>
-
-    // Filename and filedata information needs to be sent by the javascript that runs jspsych
-    function saveData(filename, filedata){
-        $.ajax({
-            type:'post',
-            cache: false,
-            url: 'save_data.php', // this is the path to the above PHP script
-            data: {filename: filename, filedata: filedata}
-        });
-    }
-
-    // The Fisher-Yates Shuffle
-    function shuffle(array) {
-        var currentIndex = array.length, temporaryValue, randomIndex ;
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-            // And swap it with the current element.
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
-        }
-        return array;
-    }
-
-    // This is the timeline that our study will follow. We will push blocks into it.
-    var timeline = [];
-    //--------------------------------- Participant Info--------------------------------------------------------
-    //makes the trials of adding numbers with text response
-
-    var partQs = {
-        type: 'survey-text',
-        questions: ["Participant Number", "Experimenter", "Test Room"]
-    };
-    timeline.push(partQs);
-    var participantNo = prompt("Enter Participant Number:");
-    var participantNumber = Number(participantNo);
-    /* var participantNode = {
-     timeline: [partQs],
-     loop_function: function (data) {
-     if (1 == 1) {
-     var data = jsPsych.data.getLastTrialData();
-     participantNo = JSON.parse(data.responses)['Q0'];
-     participantNumber = Number(participantNo);
-     return false;
-     }
-     }
-     }
-
-     timeline.push (participantNode);
-     */
-
-
-
-    //--------------------------------------------------Demographics-----------------------------------------------------------
-    /* var demographicQs = {
-     type: 'survey-multi-choice',
-     questions: ["How old are you?", "Please enter your gender", "Please enter whether you are right or left handed.",
-     "Please enter your level of education.", "Please enter your ethnicity."],
-     options: [["18-20","21-30","31-40","41-50","51-60","61-70","71 and above"],
-     ["Male","Female","Other","Prefer not to answer"],
-     ["Right-handed","Left-handed","Ambidextrous"],
-     ["Less than 8th grade","Completed through 8th grade","High school diploma or equivalent","Some college, no degree","Associates degree","Bachelors degree","Masters Degree", "Professional Degree","Doctorate Degree"],
-     ["White","Hispanic or Latino", "Black or African American", "Native American or American Indian", "Asian/Pacific Islander", "Other", "Prefer not to answer"]],
-     required: [true,true,true,true,true]
-     };
-
-     timeline.push (demographicQs);
-     */
-    //---------------------------------------------Instructions----------------------------------------------------------------
-    var instruction_block = {
-        type:'html',
-        url: "numbers_instructions.html",
-        cont_btn: "start"
-    };
-
-    timeline.push (instruction_block);
-
-    //---------------------------------------------Practice Blocks-------------------------------------------------------------
 
     var sounds = ['sound/autumn_cut1.mp3', 'sound/autumn_cut2.mp3'];
 
@@ -131,50 +29,9 @@
 
     timeline.push(sound_trial);
 
-    for(j=0; j<9; j=j+1) {
-        var practice_warning = {
-            type: 'single-stim',
-            stimulus: 'New List',
-            is_html: true,
-            timing_response: 2000,
-            response_ends_trial: false
-        };
-
-        timeline.push(practice_warning);
-
-        var practice_trial_response = {
-            type: 'survey-text',
-            questions: ['Recall the list in order. (no spaces or commas)'],
-        };
-
-        timeline.push(practice_trial_response);
-    }
-
-    //--------------------------------------------------------Debriefing-------------------------------------------------------
-
-    var debrief_block = {
-        type: 'button-response',
-        choices: ['Finish'],
-        is_html: true,
-        stimulus: '<div><p style="text-align:center">DEBRIEFING</p><div><p style="text-align:left">Thank you for your participation. The study is now over.' +
-        ' </p><p style="text-align:left">' +
-        'Please click \'Finish\' to end the study and save your data. If you have any questions, please feel free to ask the experimenter. </p></div>'
-    };
-    timeline.push (debrief_block);
-
-    //----------------------------------------------------Running the Timeline-------------------------------------------------
-
     jsPsych.init({
         timeline: timeline,
-        fullscreen: true,
-        on_finish: function(data){
-            // saveData("filename.csv", jsPsych.data.dataAsCSV());
-            // jsPsych.data.displayData('csv');
-            var currentTimeMS = Date.now();
-            saveData('subject-'+participantNumber+currentTimeMS+'.csv',jsPsych.data.dataAsCSV())
-        }
+        use_webaudio: false,
     });
-    var time = jsPsych.totalTime();
-    console.log(time);
 </script>
 </html>
