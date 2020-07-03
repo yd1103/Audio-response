@@ -1,107 +1,500 @@
 <!doctype html>
 <html>
 <head>
-  <script src="jspsych/jspsych.js"></script>
-  <script src="jspsych/plugins/jspsych-html-button-response.js"></script>
-  <script src="jspsych/plugins/jspsych-instructions.js"></script>
-  <script src="jspsych/plugins/jspsych-fullscreen.js"></script>
-  <script src="jspsych/plugins/jspsych-audio-button-response.js"></script>
-  <link rel="stylesheet" type="text/css" href="jspsych/css/jspsych.css"></link>
-  <style>
-        div{
-            background: #222;
+    <title>CEL EXPERIMENT 2020</title>
+
+    <script src="jspsych/jquery.js"></script>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugins/jspsych-text.js"></script>
+    <script src="jspsych/plugins/jspsych-button-response.js"></script>
+    <script src="jspsych/plugins/jspsych-survey-likert.js"></script>
+    <script src="jspsych/plugins/jspsych-survey-text.js"></script>
+    <script src="jspsych/plugins/jspsych-single-stim.js"></script>
+    <script src="jspsych/plugins/jspsych-single-audio.js"><</script>
+    <script src="jspsych/plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="jspsych/plugins/jspsych-html.js"></script>
+    <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+
+    <style>
+        html {
+            text-align: center;
+            font-family: 'Open Sans', 'Arial', sans-serif;
+            font-size: 24px;
+            line-height: 1.6em;
+            height: 100%;
         }
+        div{
+            background: #000;
+        }
+        #jspsych-survey-text-next { text-align: center; font-size: 16px; height: 50px; width: 140px; }
+        #jspsych-button-response-button-0 {
+            text-align: center;
+            font-size: 16px; height: 50px; width: 140px; }
+        #jspsych-button-response-button-1 { text-align: center; font-size: 16px; position:relative; left: 15px;
+            height: 50px; width: 140px; }
+        .jspsych-survey-text-question textarea { text-align: center; font-size: 32px; }
     </style>
+
 </head>
 <body>
-  <body style="overflow:-Scroll;overflow-y:hidden" >
-  
-    
-  <audio controls>
-  <source src="audio/autumn1.wav" type="audio/mp3">
-  Your browser does not support the audio element.
-  </audio>
-    
+
 </body>
 <script>
 
-var timeline = [];
-  
-// welcome
-var welcome_block = {
-  type: 'html-button-response',
-  stimulus: '<p style="color: #505050; font-size: 24px;">====欢迎参加浙江大学光电学院颜色工程实验室的实验====</p>. '+
-  '<p style="color: #505050; font-size: 24px;">===请到一个全黑环境，并将屏幕亮度调至“最亮”===</p>. '+
-  '<p style="color: #505050; font-size: 24px;">==将笔记本电脑插上耳机并将音量调至“50”==</p>. '+
-  '<p style="color: #505050; font-size: 24px;">=完成后请点下方“继续”按钮=</p>. ',
-  choices: ['继续']
-}; 
+    // Filename and filedata information needs to be sent by the javascript that runs jspsych
+    function saveData(filename, filedata){
+        $.ajax({
+            type:'post',
+            cache: false,
+            url: 'save_data.php', // this is the path to the above PHP script
+            data: {filename: filename, filedata: filedata}
+        });
+    }
 
-timeline.push(welcome_block);
+    // The Fisher-Yates Shuffle
+    function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex ;
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+        return array;
+    }
 
-// instructions  
-var instruction_block = {
-  type: 'instructions',
-  pages: [
-  // page 1 第一阶段（测试）
-  '<p style="color: #505050; font-size: 24px;"> 第一阶段：音乐情绪实验(测试)：</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 实验开始时，你将听到一段音频，请根据你的感受选择你认为更匹配的形容词</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 每次作答之间会有五秒停顿，之后自动播放下一段音频</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 因此如果你想休息，可以记住答案，先不作答。</p>',
-  // page 2 第二阶段（音乐情绪选择）
-  '<p style="color: #505050; font-size: 24px;"> 第二阶段：音乐情绪实验(正式)：</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 此阶段方法与上一个阶段相同,</p>'+
-  '<p style="color: #505050; font-size: 24px;"> (实验开始时，你将听到一段音频，请根据你的感受选择你认为更匹配的形容词)</p>'+
-  '<p style="color: #505050; font-size: 24px;"> (每次作答之间会有五秒停顿，之后自动播放下一段音频)</p>'+
-  '<p style="color: #505050; font-size: 24px;"> (因此如果你想休息，可以记住答案，先不作答。)</p>',
-  // page 3 第三阶段（音乐与颜色变化）
-  '<p style="color: #505050; font-size: 24px;"> 第三阶段：音乐与颜色变化：</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 此阶段你将同时听到音频和屏幕的颜色变化</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 请根据你的感受，选择你认为更匹配的形容词</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 每次作答之间会有五秒停顿，之后自动播放下一段音频和颜色变化</p>'+
-  '<p style="color: #505050; font-size: 24px;"> 因此如果你想休息，可以记住答案，先不作答。</p>',
-  ],
-  show_clickable_nav: true,
-  show_page_number: true
-};
+    // This is the timeline that our study will follow. We will push blocks into it.
+    var timeline = [];
+    //--------------------------------- Participant Info--------------------------------------------------------
+    //makes the trials of adding numbers with text response
 
-timeline.push(instruction_block);
+    var partQs = {
+        type: 'survey-text',
+        questions: ["Participant Number", "Experimenter", "Test Room"]
+    };
+    timeline.push(partQs);
+    var participantNo = prompt("Enter Participant Number:");
+    var participantNumber = Number(participantNo);
+    /* var participantNode = {
+     timeline: [partQs],
+     loop_function: function (data) {
+     if (1 == 1) {
+     var data = jsPsych.data.getLastTrialData();
+     participantNo = JSON.parse(data.responses)['Q0'];
+     participantNumber = Number(participantNo);
+     return false;
+     }
+     }
+     }
 
-// make it fullscreen
-var fullscreen_trial = {
-  type: 'fullscreen',
-  fullscreen_mode: true
-}
-
-timeline.push(fullscreen_trial);
-  
-var trial_parameters = [
-  { audio: 'audio/autumn_cut1.wav', choices: ['(3)非常积极主动','(2)积极主动','(1)比较积极主动','(0)中性','(-1)比较消极被动','（-2)消极被动','（-3）非常消极被动'], prompt: ['第一首歌-第一小段']},
-  { audio: 'audio/autumn_cut1.wav', choices: ['Agitated','Calm'], prompt: ['第一首歌-第一小段']},
-  { audio: 'audio/autumn_cut2.wav', choices: ['Active','Passive'], prompt: ['第一首歌-第二小段']},
-  { audio: 'audio/autumn_cut2.wav', choices: ['Agitated','Calm'], prompt: ['第一首歌-第二小段']}
-]
-
-var trial = {
-  timeline_variables: trial_parameters,
-  timeline: [{
-    type: 'audio-button-response',
-    stimulus: jsPsych.timelineVariable('audio'),
-    choices: jsPsych.timelineVariable('choices'),
-    margin_horizontal: "20px",
-    button_html: '<button class="jspsych-btn" style="background-color:#505050; border-color:black; width: 120px; font-size: 12px">%choice%</button>',
-    prompt: '<p style="color: #505050; font-size: 24px;"><p>你认为，哪一种情绪更接近这段音乐?</p>',
-    post_trial_gap: 5000
-  }],
-};
-timeline.push(trial); 
+     timeline.push (participantNode);
+     */
 
 
-jsPsych.init({
-  timeline: timeline,
-  use_webaudio: false,
-  preload_audio: ['audio/autumn_cut1.wav','audio/autumn_cut2.wav','audio/autumn1.wav'],
-})
 
+    //--------------------------------------------------Demographics-----------------------------------------------------------
+    /* var demographicQs = {
+     type: 'survey-multi-choice',
+     questions: ["How old are you?", "Please enter your gender", "Please enter whether you are right or left handed.",
+     "Please enter your level of education.", "Please enter your ethnicity."],
+     options: [["18-20","21-30","31-40","41-50","51-60","61-70","71 and above"],
+     ["Male","Female","Other","Prefer not to answer"],
+     ["Right-handed","Left-handed","Ambidextrous"],
+     ["Less than 8th grade","Completed through 8th grade","High school diploma or equivalent","Some college, no degree","Associates degree","Bachelors degree","Masters Degree", "Professional Degree","Doctorate Degree"],
+     ["White","Hispanic or Latino", "Black or African American", "Native American or American Indian", "Asian/Pacific Islander", "Other", "Prefer not to answer"]],
+     required: [true,true,true,true,true]
+     };
+
+     timeline.push (demographicQs);
+     */
+    //---------------------------------------------Instructions----------------------------------------------------------------
+    var instruction_block = {
+        type:'html',
+        url: "numbers_instructions.html",
+        cont_btn: "start"
+    };
+
+    timeline.push (instruction_block);
+
+    //----------------------------------------------Data Gathering-------------------------------------------------------------
+
+    var RandNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+    //---------------------------------------------Practice Blocks-------------------------------------------------------------
+
+    var sounds = ['audio/autumn_cut1.wav', 'audio/autumn_cut2.wav'];
+    var shuffled_sounds  = shuffle(sounds);
+
+    var sound_trial = {
+        type: 'single-audio',
+        stimulus: shuffled_sounds[0],
+        prompt: "Hit Space to Begin"
+    };
+
+    timeline.push(sound_trial);
+
+    for(j=0; j<9; j=j+1) {
+        var practice_sample = jsPsych.randomization.sample(RandNumbers, 9, true);
+        var practice_warning = {
+            type: 'single-stim',
+            stimulus: 'New List',
+            is_html: true,
+            timing_response: 2000,
+            response_ends_trial: false
+        };
+
+        timeline.push(practice_warning);
+
+
+        for (i=0; i<10; i=i+1) {
+            var practice_trial = {
+                type: 'single-stim',
+                stimulus: practice_sample[i],
+                is_html: true,
+                timing_response: 750,
+                response_ends_trial: false
+            };
+
+            timeline.push(practice_trial);
+        }
+
+        var practice_trial_response = {
+            type: 'survey-text',
+            questions: ['Recall the list in order. (no spaces or commas)'],
+        };
+
+
+
+        timeline.push(practice_trial_response);
+    }
+
+
+    //--------------------------------------------Test Blocks------------------------------------------------------------------
+
+    //--------------------------------------------Session One------------------------------------------------------------------
+
+    var sound_trial2 = {
+        type: 'single_audio',
+        stimulus: shuffled_sounds[1],
+        prompt: 'Hit Space to Begin'
+    };
+
+    timeline.push(sound_trial2);
+
+    for(j=0; j<9; j=j+1) {
+        var sample1 = jsPsych.randomization.sample(RandNumbers, 9, true);
+        var warning1 = {
+            type: 'single-stim',
+            stimulus: 'New List',
+            is_html: true,
+            timing_response: 2000,
+            response_ends_trial: false
+        };
+
+        timeline.push(warning1);
+
+
+        for (i=0; i<10; i=i+1) {
+            var trial1 = {
+                type: 'single-stim',
+                stimulus: sample1[i],
+                is_html: true,
+                timing_response: 750,
+                response_ends_trial: false
+            };
+
+            timeline.push(trial1);
+        }
+
+        var trial_response1 = {
+            type: 'survey-text',
+            questions: ['Recall the list in order. (no spaces or commas)'],
+            timing_response: 13000,
+            response_ends_trial: false
+        };
+
+        timeline.push(trial_response1);
+    }
+
+    for(j=0; j<9; j=j+1) {
+        var sample2 = jsPsych.randomization.sample(RandNumbers, 9, true);
+        var warning2 = {
+            type: 'single-stim',
+            stimulus: 'New List',
+            is_html: true,
+            timing_response: 2000,
+            response_ends_trial: false
+        };
+
+        timeline.push(warning2);
+
+
+        for (i=0; i<10; i=i+1) {
+            var trial2 = {
+                type: 'single-stim',
+                stimulus: sample2[i],
+                is_html: true,
+                timing_response: 750,
+                response_ends_trial: false
+            };
+
+            timeline.push(trial2);
+        }
+
+        var trial_response2 = {
+            type: 'survey-text',
+            questions: ['Recall the list in order. (no spaces or commas)'],
+            timing_response: 13000,
+            response_ends_trial: false
+        };
+
+        timeline.push(trial_response2);
+    }
+
+    for(j=0; j<9; j=j+1) {
+        var sample3 = jsPsych.randomization.sample(RandNumbers, 9, true);
+        var warning3 = {
+            type: 'single-stim',
+            stimulus: 'New List',
+            is_html: true,
+            timing_response: 2000,
+            response_ends_trial: false
+        };
+
+        timeline.push(warning3);
+
+
+        for (i=0; i<10; i=i+1) {
+            var trial3 = {
+                type: 'single-stim',
+                stimulus: sample3[i],
+                is_html: true,
+                timing_response: 750,
+                response_ends_trial: false
+            };
+
+            timeline.push(trial3);
+        }
+
+        var trial_response3 = {
+            type: 'survey-text',
+            questions: ['Recall the list in order. (no spaces or commas)'],
+            timing_response: 13000,
+            response_ends_trial: false
+        };
+
+        timeline.push(trial_response3);
+    }
+
+    for(j=0; j<9; j=j+1) {
+        var sample4 = jsPsych.randomization.sample(RandNumbers, 9, true);
+        var warning4 = {
+            type: 'single-stim',
+            stimulus: 'New List',
+            is_html: true,
+            timing_response: 2000,
+            response_ends_trial: false
+        };
+
+        timeline.push(warning4);
+
+
+        for (i=0; i<10; i=i+1) {
+            var trial4 = {
+                type: 'single-stim',
+                stimulus: sample4[i],
+                is_html: true,
+                timing_response: 750,
+                response_ends_trial: false
+            };
+
+            timeline.push(trial4);
+        }
+
+        var trial_response4 = {
+            type: 'survey-text',
+            questions: ['Recall the list in order. (no spaces or commas)'],
+            timing_response: 13000,
+            response_ends_trial: false
+        };
+
+        timeline.push(trial_response4);
+    }
+
+    //--------------------------------------------Session One------------------------------------------------------------------
+
+
+    for(j=0; j<9; j=j+1) {
+        var sample4_1 = jsPsych.randomization.sample(RandNumbers, 9, true);
+        var warning4_1 = {
+            type: 'single-stim',
+            stimulus: 'New List',
+            is_html: true,
+            timing_response: 2000,
+            response_ends_trial: false
+        };
+
+        timeline.push(warning4_1);
+
+
+        for (i=0; i<10; i=i+1) {
+            var trial4_1 = {
+                type: 'single-stim',
+                stimulus: sample4_1[i],
+                is_html: true,
+                timing_response: 750,
+                response_ends_trial: false
+            };
+
+            timeline.push(trial4_1);
+        }
+
+        var trial_response4_1 = {
+            type: 'survey-text',
+            questions: ['Recall the list in order. (no spaces or commas)'],
+            timing_response: 13000,
+            response_ends_trial: false
+        };
+
+        timeline.push(trial_response4_1);
+    }
+
+    for(j=0; j<9; j=j+1) {
+        var sample4_2 = jsPsych.randomization.sample(RandNumbers, 9, true);
+        var warning4_2 = {
+            type: 'single-stim',
+            stimulus: 'New List',
+            is_html: true,
+            timing_response: 2000,
+            response_ends_trial: false
+        };
+
+        timeline.push(warning4_2);
+
+
+        for (i=0; i<10; i=i+1) {
+            var trial4_2 = {
+                type: 'single-stim',
+                stimulus: sample4_2[i],
+                is_html: true,
+                timing_response: 750,
+                response_ends_trial: false
+            };
+
+            timeline.push(trial4_2);
+        }
+
+        var trial_response4_2 = {
+            type: 'survey-text',
+            questions: ['Recall the list in order. (no spaces or commas)'],
+            timing_response: 13000,
+            response_ends_trial: false
+        };
+
+        timeline.push(trial_response4_2);
+    }
+
+    for(j=0; j<9; j=j+1) {
+        var sample4_3 = jsPsych.randomization.sample(RandNumbers, 9, true);
+        var warning4_3 = {
+            type: 'single-stim',
+            stimulus: 'New List',
+            is_html: true,
+            timing_response: 2000,
+            response_ends_trial: false
+        };
+
+        timeline.push(warning3);
+
+
+        for (i=0; i<10; i=i+1) {
+            var trial4_3 = {
+                type: 'single-stim',
+                stimulus: sample4_3[i],
+                is_html: true,
+                timing_response: 750,
+                response_ends_trial: false
+            };
+
+            timeline.push(trial4_3);
+        }
+
+        var trial_response4_3 = {
+            type: 'survey-text',
+            questions: ['Recall the list in order. (no spaces or commas)'],
+            timing_response: 13000,
+            response_ends_trial: false
+        };
+
+        timeline.push(trial_response4_3);
+    }
+
+    for(j=0; j<9; j=j+1) {
+        var sample4_4 = jsPsych.randomization.sample(RandNumbers, 9, true);
+        var warning4_4 = {
+            type: 'single-stim',
+            stimulus: 'New List',
+            is_html: true,
+            timing_response: 2000,
+            response_ends_trial: false
+        };
+
+        timeline.push(warning4_4);
+
+
+        for (i=0; i<10; i=i+1) {
+            var trial4_4 = {
+                type: 'single-stim',
+                stimulus: sample4_4[i],
+                is_html: true,
+                timing_response: 750,
+                response_ends_trial: false
+            };
+
+            timeline.push(trial4_4);
+        }
+
+        var trial_response4_4 = {
+            type: 'survey-text',
+            questions: ['Recall the list in order. (no spaces or commas)'],
+            timing_response: 13000,
+            response_ends_trial: false
+        };
+
+        timeline.push(trial_response4_4);
+    }
+
+
+    //--------------------------------------------------------Debriefing-------------------------------------------------------
+
+    var debrief_block = {
+        type: 'button-response',
+        choices: ['Finish'],
+        is_html: true,
+        stimulus: '<div><p style="text-align:center">DEBRIEFING</p><div><p style="text-align:left">Thank you for your participation. The study is now over.' +
+        ' </p><p style="text-align:left">' +
+        'Please click \'Finish\' to end the study and save your data. If you have any questions, please feel free to ask the experimenter. </p></div>'
+    };
+    timeline.push (debrief_block);
+
+    //----------------------------------------------------Running the Timeline-------------------------------------------------
+
+    jsPsych.init({
+        timeline: timeline,
+        fullscreen: true,
+
+        on_finish: function(data){
+            // saveData("filename.csv", jsPsych.data.dataAsCSV());
+            // jsPsych.data.displayData('csv');
+            var currentTimeMS = Date.now();
+            saveData('subject-'+participantNumber+currentTimeMS+'.csv',jsPsych.data.dataAsCSV())
+        }
+    });
+    var time = jsPsych.totalTime();
+    console.log(time);
 </script>
 </html>
