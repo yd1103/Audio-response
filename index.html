@@ -18,8 +18,32 @@
 <body>
   <body style="overflow:-Scroll;overflow-y:hidden" >
   <button class="jspsych-btn" style="background-color:#505050; border-color:black; width: 200px; font-size: 24px"></button>
+
+  <button id="btn">Play</button>
+  <p>
+  Click button or press the "A" key(You need to press the result-tab before you press A)
+  </p>
+
+  <audio id="audio" controls style="display:none">
+  <source src="sound/autumn_cut1.wav" type="audio/mp3"> Your browser does not support the audio element.
+  </audio>
 </body>
 <script>
+
+    // To set a way to replay the snippet using keyboard
+    document.getElementById('btn').onclick = function(){
+    //Getting button and listning for click
+    document.getElementById('audio').play();
+    //Utilizing the HTML Audio/Video DOM Reference to play audio/video
+    }
+
+    //to play on the key A do this(using Jquery):
+    document.addEventListener('keydown', function(e) {
+      if(e.keyCode == 65){
+      document.getElementById('audio').play();
+      }
+    });
+
 
 var timeline = [];
   
