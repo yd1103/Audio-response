@@ -30,8 +30,8 @@
 		
 		//array for different habituation stimuli//
 		var habituation_stimuli = [
-		  { audio: "sound/autumn_cut1.mp3", prompt: 'This is a short tone.'},
-		  { audio: "sound/autumn_cut2.mp3", prompt: 'This is a long tone.'}
+		  { audio: "audio/autumn_cut1.wav", prompt: 'This is a short tone.'},
+		  { audio: "audio/autumn_cut2.wav", prompt: 'This is a long tone.'}
 		];
 		
 		//fixation cross for habituation (shorter)//
@@ -61,7 +61,7 @@
 		jsPsych.init({
 			timeline: timeline,
 			use_webaudio: false,
-			preload_audio: ['audio/autumn_cut1.mp3', 'audio/autumn_cut2.mp3']
+			preload_audio: ['audio/autumn_cut1.wav', 'audio/autumn_cut2.wav']
 		})
 		
 	</script>
