@@ -119,25 +119,19 @@
 
     timeline.push (instruction_block);
 
-    //----------------------------------------------Data Gathering-------------------------------------------------------------
-
-    var RandNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
     //---------------------------------------------Practice Blocks-------------------------------------------------------------
 
-    var sounds = ['audio/autumn_cut1.wav', 'audio/autumn_cut2.wav'];
-    var shuffled_sounds  = shuffle(sounds);
+    var sounds = ['sound/autumn_cut1.mp3', 'sound/autumn_cut2.mp3'];
 
     var sound_trial = {
         type: 'single-audio',
-        stimulus: shuffled_sounds[0],
+        stimulus: sounds[0],
         prompt: "Hit Space to Begin"
     };
 
     timeline.push(sound_trial);
 
     for(j=0; j<9; j=j+1) {
-        var practice_sample = jsPsych.randomization.sample(RandNumbers, 9, true);
         var practice_warning = {
             type: 'single-stim',
             stimulus: 'New List',
@@ -148,325 +142,13 @@
 
         timeline.push(practice_warning);
 
-
-        for (i=0; i<10; i=i+1) {
-            var practice_trial = {
-                type: 'single-stim',
-                stimulus: practice_sample[i],
-                is_html: true,
-                timing_response: 750,
-                response_ends_trial: false
-            };
-
-            timeline.push(practice_trial);
-        }
-
         var practice_trial_response = {
             type: 'survey-text',
             questions: ['Recall the list in order. (no spaces or commas)'],
         };
 
-
-
         timeline.push(practice_trial_response);
     }
-
-
-    //--------------------------------------------Test Blocks------------------------------------------------------------------
-
-    //--------------------------------------------Session One------------------------------------------------------------------
-
-    var sound_trial2 = {
-        type: 'single_audio',
-        stimulus: shuffled_sounds[1],
-        prompt: 'Hit Space to Begin'
-    };
-
-    timeline.push(sound_trial2);
-
-    for(j=0; j<9; j=j+1) {
-        var sample1 = jsPsych.randomization.sample(RandNumbers, 9, true);
-        var warning1 = {
-            type: 'single-stim',
-            stimulus: 'New List',
-            is_html: true,
-            timing_response: 2000,
-            response_ends_trial: false
-        };
-
-        timeline.push(warning1);
-
-
-        for (i=0; i<10; i=i+1) {
-            var trial1 = {
-                type: 'single-stim',
-                stimulus: sample1[i],
-                is_html: true,
-                timing_response: 750,
-                response_ends_trial: false
-            };
-
-            timeline.push(trial1);
-        }
-
-        var trial_response1 = {
-            type: 'survey-text',
-            questions: ['Recall the list in order. (no spaces or commas)'],
-            timing_response: 13000,
-            response_ends_trial: false
-        };
-
-        timeline.push(trial_response1);
-    }
-
-    for(j=0; j<9; j=j+1) {
-        var sample2 = jsPsych.randomization.sample(RandNumbers, 9, true);
-        var warning2 = {
-            type: 'single-stim',
-            stimulus: 'New List',
-            is_html: true,
-            timing_response: 2000,
-            response_ends_trial: false
-        };
-
-        timeline.push(warning2);
-
-
-        for (i=0; i<10; i=i+1) {
-            var trial2 = {
-                type: 'single-stim',
-                stimulus: sample2[i],
-                is_html: true,
-                timing_response: 750,
-                response_ends_trial: false
-            };
-
-            timeline.push(trial2);
-        }
-
-        var trial_response2 = {
-            type: 'survey-text',
-            questions: ['Recall the list in order. (no spaces or commas)'],
-            timing_response: 13000,
-            response_ends_trial: false
-        };
-
-        timeline.push(trial_response2);
-    }
-
-    for(j=0; j<9; j=j+1) {
-        var sample3 = jsPsych.randomization.sample(RandNumbers, 9, true);
-        var warning3 = {
-            type: 'single-stim',
-            stimulus: 'New List',
-            is_html: true,
-            timing_response: 2000,
-            response_ends_trial: false
-        };
-
-        timeline.push(warning3);
-
-
-        for (i=0; i<10; i=i+1) {
-            var trial3 = {
-                type: 'single-stim',
-                stimulus: sample3[i],
-                is_html: true,
-                timing_response: 750,
-                response_ends_trial: false
-            };
-
-            timeline.push(trial3);
-        }
-
-        var trial_response3 = {
-            type: 'survey-text',
-            questions: ['Recall the list in order. (no spaces or commas)'],
-            timing_response: 13000,
-            response_ends_trial: false
-        };
-
-        timeline.push(trial_response3);
-    }
-
-    for(j=0; j<9; j=j+1) {
-        var sample4 = jsPsych.randomization.sample(RandNumbers, 9, true);
-        var warning4 = {
-            type: 'single-stim',
-            stimulus: 'New List',
-            is_html: true,
-            timing_response: 2000,
-            response_ends_trial: false
-        };
-
-        timeline.push(warning4);
-
-
-        for (i=0; i<10; i=i+1) {
-            var trial4 = {
-                type: 'single-stim',
-                stimulus: sample4[i],
-                is_html: true,
-                timing_response: 750,
-                response_ends_trial: false
-            };
-
-            timeline.push(trial4);
-        }
-
-        var trial_response4 = {
-            type: 'survey-text',
-            questions: ['Recall the list in order. (no spaces or commas)'],
-            timing_response: 13000,
-            response_ends_trial: false
-        };
-
-        timeline.push(trial_response4);
-    }
-
-    //--------------------------------------------Session One------------------------------------------------------------------
-
-
-    for(j=0; j<9; j=j+1) {
-        var sample4_1 = jsPsych.randomization.sample(RandNumbers, 9, true);
-        var warning4_1 = {
-            type: 'single-stim',
-            stimulus: 'New List',
-            is_html: true,
-            timing_response: 2000,
-            response_ends_trial: false
-        };
-
-        timeline.push(warning4_1);
-
-
-        for (i=0; i<10; i=i+1) {
-            var trial4_1 = {
-                type: 'single-stim',
-                stimulus: sample4_1[i],
-                is_html: true,
-                timing_response: 750,
-                response_ends_trial: false
-            };
-
-            timeline.push(trial4_1);
-        }
-
-        var trial_response4_1 = {
-            type: 'survey-text',
-            questions: ['Recall the list in order. (no spaces or commas)'],
-            timing_response: 13000,
-            response_ends_trial: false
-        };
-
-        timeline.push(trial_response4_1);
-    }
-
-    for(j=0; j<9; j=j+1) {
-        var sample4_2 = jsPsych.randomization.sample(RandNumbers, 9, true);
-        var warning4_2 = {
-            type: 'single-stim',
-            stimulus: 'New List',
-            is_html: true,
-            timing_response: 2000,
-            response_ends_trial: false
-        };
-
-        timeline.push(warning4_2);
-
-
-        for (i=0; i<10; i=i+1) {
-            var trial4_2 = {
-                type: 'single-stim',
-                stimulus: sample4_2[i],
-                is_html: true,
-                timing_response: 750,
-                response_ends_trial: false
-            };
-
-            timeline.push(trial4_2);
-        }
-
-        var trial_response4_2 = {
-            type: 'survey-text',
-            questions: ['Recall the list in order. (no spaces or commas)'],
-            timing_response: 13000,
-            response_ends_trial: false
-        };
-
-        timeline.push(trial_response4_2);
-    }
-
-    for(j=0; j<9; j=j+1) {
-        var sample4_3 = jsPsych.randomization.sample(RandNumbers, 9, true);
-        var warning4_3 = {
-            type: 'single-stim',
-            stimulus: 'New List',
-            is_html: true,
-            timing_response: 2000,
-            response_ends_trial: false
-        };
-
-        timeline.push(warning3);
-
-
-        for (i=0; i<10; i=i+1) {
-            var trial4_3 = {
-                type: 'single-stim',
-                stimulus: sample4_3[i],
-                is_html: true,
-                timing_response: 750,
-                response_ends_trial: false
-            };
-
-            timeline.push(trial4_3);
-        }
-
-        var trial_response4_3 = {
-            type: 'survey-text',
-            questions: ['Recall the list in order. (no spaces or commas)'],
-            timing_response: 13000,
-            response_ends_trial: false
-        };
-
-        timeline.push(trial_response4_3);
-    }
-
-    for(j=0; j<9; j=j+1) {
-        var sample4_4 = jsPsych.randomization.sample(RandNumbers, 9, true);
-        var warning4_4 = {
-            type: 'single-stim',
-            stimulus: 'New List',
-            is_html: true,
-            timing_response: 2000,
-            response_ends_trial: false
-        };
-
-        timeline.push(warning4_4);
-
-
-        for (i=0; i<10; i=i+1) {
-            var trial4_4 = {
-                type: 'single-stim',
-                stimulus: sample4_4[i],
-                is_html: true,
-                timing_response: 750,
-                response_ends_trial: false
-            };
-
-            timeline.push(trial4_4);
-        }
-
-        var trial_response4_4 = {
-            type: 'survey-text',
-            questions: ['Recall the list in order. (no spaces or commas)'],
-            timing_response: 13000,
-            response_ends_trial: false
-        };
-
-        timeline.push(trial_response4_4);
-    }
-
 
     //--------------------------------------------------------Debriefing-------------------------------------------------------
 
@@ -485,7 +167,6 @@
     jsPsych.init({
         timeline: timeline,
         fullscreen: true,
-
         on_finish: function(data){
             // saveData("filename.csv", jsPsych.data.dataAsCSV());
             // jsPsych.data.displayData('csv');
