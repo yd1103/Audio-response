@@ -1,86 +1,238 @@
 <!doctype html>
 <html>
 <head>
-    <title>CEL EXPERIMENT 2020</title>
-
-    <script src="js/jquery.min.js"></script>
-    <script src="jspsych/jspsych.js"></script>
-    <script src="jspsych/plugins/jspsych-text.js"></script>
-    <script src="jspsych/plugins/jspsych-button-response.js"></script>
-    <script src="jspsych/plugins/jspsych-survey-likert.js"></script>
-    <script src="jspsych/plugins/jspsych-survey-text.js"></script>
-    <script src="jspsych/plugins/jspsych-single-stim.js"></script>
-    <script src="jspsych/plugins/jspsych-single-audio.js"><</script>
-    <script src="jspsych/plugins/jspsych-survey-multi-choice.js"></script>
-    <script src="jspsych/plugins/jspsych-html.js"></script>
-    <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
-
-    <style>
-        html {
-            text-align: center;
-            font-family: 'Open Sans', 'Arial', sans-serif;
-            font-size: 24px;
-            line-height: 1.6em;
-            height: 100%;
-        }
+  <script src="jspsych/jspsych.js"></script>
+  <script src="jspsych/plugins/jspsych-html-button-response.js"></script>
+  <script src="jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+  <script src="jspsych/plugins/jspsych-instructions.js"></script>
+  <script src="jspsych/plugins/jspsych-fullscreen.js"></script>
+  <script src="jspsych/plugins/jspsych-single-audio.js"><</script>
+  <script src="jspsych/plugins/jspsych-audio-button-response.js"></script>
+  <link rel="stylesheet" type="text/css" href="jspsych/css/jspsych.css"></link>
+  <style>
         div{
-            background: #000;
+            background: #222;
         }
-        #jspsych-survey-text-next { text-align: center; font-size: 16px; height: 50px; width: 140px; }
-        #jspsych-button-response-button-0 {
-            text-align: center;
-            font-size: 16px; height: 50px; width: 140px; }
-        #jspsych-button-response-button-1 { text-align: center; font-size: 16px; position:relative; left: 15px;
-            height: 50px; width: 140px; }
-        .jspsych-survey-text-question textarea { text-align: center; font-size: 32px; }
     </style>
-
 </head>
 <body>
+
+  <audio id="audio" controls style="display:none">
+  <source src="sound/autumn_cut1.wav" type="audio/mp3"> 
+  Your browser does not support the audio element.
+  </audio>
 
 </body>
 <script>
 
-    // Filename and filedata information needs to be sent by the javascript that runs jspsych
-    function saveData(filename, filedata){
-        $.ajax({
-            type:'post',
-            cache: false,
-            url: 'save_data.php', // this is the path to the above PHP script
-            data: {filename: filename, filedata: filedata}
-        });
+
+var timeline = [];
+  
+// welcome
+var welcome_block = {
+  type: 'html-button-response',
+  stimulus: '<p style="color: #505050; font-size: 24px;">====欢迎参加浙江大学光电学院颜色工程实验室的实验====</p>.'+
+  '<p style="color: #505050; font-size: 24px;">===请到一个全黑环境，并将屏幕亮度调至“最亮”===</p>.'+
+  '<p style="color: #505050; font-size: 24px;">==将笔记本电脑插上耳机并将音量调至“50”==</p>.'+
+  '<p style="color: #505050; font-size: 24px;">=完成后请点下方“继续”按钮=</p>. ',
+  choices: ['继续']
+}; 
+
+timeline.push(welcome_block);
+
+// instructions  
+var instruction_block = {
+  type: 'instructions',
+  pages: [
+  // page 1 第一阶段（测试）
+  '<p style="color: #505050; font-size: 24px;"> 第一阶段：音乐情绪实验(测试)：</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 实验开始时，你将听到一段音频，请根据你的感受选择你认为更匹配的形容词</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 每次作答之间会有五秒停顿，之后自动播放下一段音频</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 因此如果你想休息，可以记住答案，先不作答。</p>',
+  // page 2 第二阶段（音乐情绪选择）
+  '<p style="color: #505050; font-size: 24px;"> 第二阶段：音乐情绪实验(正式)：</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 此阶段方法与上一个阶段相同,</p>'+
+  '<p style="color: #505050; font-size: 24px;"> (实验开始时，你将听到一段音频，请根据你的感受选择你认为更匹配的形容词)</p>'+
+  '<p style="color: #505050; font-size: 24px;"> (每次作答之间会有五秒停顿，之后自动播放下一段音频)</p>'+
+  '<p style="color: #505050; font-size: 24px;"> (因此如果你想休息，可以记住答案，先不作答。)</p>',
+  // page 3 第三阶段（音乐与颜色变化）
+  '<p style="color: #505050; font-size: 24px;"> 第三阶段：音乐与颜色变化：</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 此阶段你将同时听到音频和屏幕的颜色变化</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 请根据你的感受，选择你认为更匹配的形容词</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 每次作答之间会有五秒停顿，之后自动播放下一段音频和颜色变化</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 因此如果你想休息，可以记住答案，先不作答。</p>',
+  ],
+  show_clickable_nav: true,
+  show_page_number: true
+};
+
+timeline.push(instruction_block);
+
+// make it fullscreen
+var fullscreen_trial = {
+  type: 'fullscreen',
+  fullscreen_mode: true
+}
+
+timeline.push(fullscreen_trial);
+
+
+<!doctype html>
+<html>
+<head>
+  <script src="jspsych/jspsych.js"></script>
+  <script src="jspsych/plugins/jspsych-html-button-response.js"></script>
+  <script src="jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+  <script src="jspsych/plugins/jspsych-instructions.js"></script>
+  <script src="jspsych/plugins/jspsych-fullscreen.js"></script>
+  <script src="jspsych/plugins/jspsych-single-audio.js"><</script>
+  <script src="jspsych/plugins/jspsych-audio-button-response.js"></script>
+  <link rel="stylesheet" type="text/css" href="jspsych/css/jspsych.css"></link>
+  <style>
+        div{
+            background: #222;
+        }
+    </style>
+</head>
+<body>
+  <body style="overflow:-Scroll;overflow-y:hidden" >
+  <button class="jspsych-btn" style="background-color:#505050; border-color:black; width: 200px; font-size: 24px"></button>
+
+  <button id="btn">Play</button>
+  <p>
+  Click button or press the "A" key(You need to press the result-tab before you press A)
+  </p>
+
+  <audio id="audio" controls style="display:none">
+  <source src="audio/autumn_cut1.wav" type="audio/mp3"> Your browser does not support the audio element.
+  </audio>
+</body>
+<script>
+
+    // To set a way to replay the snippet using keyboard
+    document.getElementById('btn').onclick = function(){
+    //Getting button and listning for click
+    document.getElementById('audio').play();
+    //Utilizing the HTML Audio/Video DOM Reference to play audio/video
     }
 
-    // This is the timeline that our study will follow. We will push blocks into it.
-    var timeline = [];
-    //--------------------------------- Participant Info--------------------------------------------------------
-    //makes the trials of adding numbers with text response
+    //to play on the key A do this(using Jquery):
+    document.addEventListener('keydown', function(e) {
+      if(e.keyCode == 65){
+      document.getElementById('audio').play();
+      }
+    });
 
-    var partQs = {
-        type: 'survey-text',
-        questions: [
-      {prompt: 'How old are you?', columns: 3, required: true, name: 'Age'},
-      {prompt: 'name?', placeholder: '请写中文全名', columns: 50, required: true, name: 'Name'}
-    ],
-    };
-    timeline.push(partQs);
-    var participantNo = prompt("Enter Participant Number:");
-    var participantNumber = Number(participantNo);
 
-    //---------------------------------------------Instructions----------------------------------------------------------------
-    var instruction_block = {
-        type:'html',
-        url: "numbers_instructions.html",
-        cont_btn: "start"
-    };
+var timeline = [];
+  
+// welcome
+var welcome_block = {
+  type: 'html-button-response',
+  stimulus: '<p style="color: #505050; font-size: 24px;">====欢迎参加浙江大学光电学院颜色工程实验室的实验====</p>.'+
+  '<p style="color: #505050; font-size: 24px;">===请到一个全黑环境，并将屏幕亮度调至“最亮”===</p>.'+
+  '<p style="color: #505050; font-size: 24px;">==将笔记本电脑插上耳机并将音量调至“50”==</p>.'+
+  '<p style="color: #505050; font-size: 24px;">=完成后请点下方“继续”按钮=</p>. ',
+  choices: ['继续']
+}; 
 
-    timeline.push (instruction_block);
+timeline.push(welcome_block);
 
-    //---------------------------------------------Practice Blocks-------------------------------------------------------------
+// instructions  
+var instruction_block = {
+  type: 'instructions',
+  pages: [
+  // page 1 第一阶段（测试）
+  '<p style="color: #505050; font-size: 24px;"> 第一阶段：音乐情绪实验(测试)：</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 实验开始时，你将听到一段音频，请根据你的感受选择你认为更匹配的形容词</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 每次作答之间会有五秒停顿，之后自动播放下一段音频</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 因此如果你想休息，可以记住答案，先不作答。</p>',
+  // page 2 第二阶段（音乐情绪选择）
+  '<p style="color: #505050; font-size: 24px;"> 第二阶段：音乐情绪实验(正式)：</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 此阶段方法与上一个阶段相同,</p>'+
+  '<p style="color: #505050; font-size: 24px;"> (实验开始时，你将听到一段音频，请根据你的感受选择你认为更匹配的形容词)</p>'+
+  '<p style="color: #505050; font-size: 24px;"> (每次作答之间会有五秒停顿，之后自动播放下一段音频)</p>'+
+  '<p style="color: #505050; font-size: 24px;"> (因此如果你想休息，可以记住答案，先不作答。)</p>',
+  // page 3 第三阶段（音乐与颜色变化）
+  '<p style="color: #505050; font-size: 24px;"> 第三阶段：音乐与颜色变化：</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 此阶段你将同时听到音频和屏幕的颜色变化</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 请根据你的感受，选择你认为更匹配的形容词</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 每次作答之间会有五秒停顿，之后自动播放下一段音频和颜色变化</p>'+
+  '<p style="color: #505050; font-size: 24px;"> 因此如果你想休息，可以记住答案，先不作答。</p>',
+  ],
+  show_clickable_nav: true,
+  show_page_number: true
+};
 
-    var sounds = ['audio/autumn_cut1.wav', 'audio/autumn_cut2.wav'];
+timeline.push(instruction_block);
 
-    var sound_trial = {
+// make it fullscreen
+var fullscreen_trial = {
+  type: 'fullscreen',
+  fullscreen_mode: true
+}
+
+timeline.push(fullscreen_trial);
+
+
+
+
+
+var audio = ['sound/autumn_cut1.mp3', 'sound/autumn_cut2.mp3'];
+var task = {
+  timeline : [
+    {
+      type: 'html-keyboard-response',
+      stimulus: '<div style="font-size:60px;">+</div>',
+      choices: [69],
+      trial_duration: 1000 , // here there is the random variation
+      on_finish: function(data) {
+        if(data.key_press == 69) { //press letter 'e' to skip this part
+            jsPsych.endCurrentTimeline();
+        }
+      }
+    }
+  ]
+};
+
+
+var trial_parameters = [
+  { audio: 'audio/autumn_cut1.wav', choices: ['(3)非常积极主动','(2)积极主动','(1)比较积极主动','(0)中性','(-1)比较消极被动','（-2)消极被动','（-3）非常消极被动'], prompt: ['第一首歌-第一小段']},
+  { audio: 'audio/autumn_cut1.wav', choices: ['Agitated','Calm'], prompt: ['第一首歌-第一小段']},
+  { audio: 'audio/autumn_cut2.wav', choices: ['Active','Passive'], prompt: ['第一首歌-第二小段']},
+  { audio: 'audio/autumn_cut2.wav', choices: ['Agitated','Calm'], prompt: ['第一首歌-第二小段']}
+]
+
+var trial = {
+  timeline_variables: trial_parameters,
+  timeline: [{
+    type: 'audio-button-response',
+    stimulus: jsPsych.timelineVariable('audio'),
+    choices: jsPsych.timelineVariable('choices'),
+    margin_horizontal: "20px",
+    button_html: '<button class="jspsych-btn" style="background-color:#505050; border-color:black; width: 120px; font-size: 12px">%choice%</button>',
+    prompt: '<p style="color: #505050; font-size: 24px;"><p>你认为，哪一种情绪更接近这段音乐?</p>',
+    post_trial_gap: 5000
+  }  ],
+};
+timeline.push(trial);
+
+
+jsPsych.init({
+  timeline: timeline,
+  use_webaudio: false,
+  preload_audio: ['audio/autumn_cut1.wav','audio/autumn_cut2.wav','audio/autumn1.wav'],
+})
+
+</script>
+</html>
+
+
+
+
+
+var sounds = ['sound/autumn_cut1.mp3', 'sound/autumn_cut2.mp3'];
+var sound_trial = {
         type: 'single-audio',
         stimulus: sounds[0],
         prompt: "Hit Space to Begin"
@@ -88,52 +240,44 @@
 
     timeline.push(sound_trial);
 
-    for(j=0; j<9; j=j+1) {
-        var practice_warning = {
-            type: 'single-stim',
-            choices: ['Active','Passive'],
-            is_html: true,
-            timing_response: 2000,
-            response_ends_trial: false
-        };
 
-        timeline.push(practice_warning);
+  
+var trial_parameters = [
+  { audio: 'audio/autumn_cut1.wav', choices: ['(3)非常积极主动','(2)积极主动','(1)比较积极主动','(0)中性','(-1)比较消极被动','（-2)消极被动','（-3）非常消极被动'], prompt: ['第一首歌-第一小段']},
+  { audio: 'audio/autumn_cut1.wav', choices: ['Agitated','Calm'], prompt: ['第一首歌-第一小段']},
+  { audio: 'audio/autumn_cut2.wav', choices: ['Active','Passive'], prompt: ['第一首歌-第二小段']},
+  { audio: 'audio/autumn_cut2.wav', choices: ['Agitated','Calm'], prompt: ['第一首歌-第二小段']}
+]
 
-        var practice_trial_response = {
-            type: 'survey-text',
-            questions: ['Recall the list in order. (no spaces or commas)'],
-        };
+var trial = {
+  timeline_variables: trial_parameters,
+  timeline: [{
+    type: 'audio-button-response',
+    stimulus: jsPsych.timelineVariable('audio'),
+    choices: jsPsych.timelineVariable('choices'),
+    margin_horizontal: "20px",
+    button_html: '<button class="jspsych-btn" style="background-color:#505050; border-color:black; width: 120px; font-size: 12px">%choice%</button>',
+    prompt: '<p style="color: #505050; font-size: 24px;"><p>你认为，哪一种情绪更接近这段音乐?</p>',
+    post_trial_gap: 5000,
 
-        timeline.push(practice_trial_response);
-    }
-
-    //--------------------------------------------------------Debriefing-------------------------------------------------------
-
-    var debrief_block = {
-        type: 'button-response',
-        choices: ['Finish'],
-        is_html: true,
-        stimulus: '<div><p style="text-align:center">DEBRIEFING</p><div><p style="text-align:left">Thank you for your participation. The study is now over.' +
-        ' </p><p style="text-align:left">' +
-        'Please click \'Finish\' to end the study and save your data. If you have any questions, please feel free to ask the experimenter. </p></div>'
-    };
-    timeline.push (debrief_block);
-
-    //----------------------------------------------------Running the Timeline-------------------------------------------------
-
-    jsPsych.init({
-        timeline: timeline,
-        fullscreen: true,
-        use_webaudio: false,
-        preload_audio: ['audio/autumn_cut1.wav','audio/autumn_cut2.wav','audio/autumn1.wav'],
-        on_finish: function(data){
-            // saveData("filename.csv", jsPsych.data.dataAsCSV());
-            // jsPsych.data.displayData('csv');
-            var currentTimeMS = Date.now();
-            saveData('subject-'+participantNumber+currentTimeMS+'.csv',jsPsych.data.dataAsCSV())
-        }
+    //to play on the key A do this(using Jquery):
+    document.addEventListener('keydown', function(e) {
+      if(e.keyCode == 114){
+      document.getElementById('audio').play();
+      }
     });
-    var time = jsPsych.totalTime();
-    console.log(time);
+
+
+  }],
+};
+timeline.push(trial);
+
+
+jsPsych.init({
+  timeline: timeline,
+  use_webaudio: false,
+  preload_audio: ['audio/autumn_cut1.wav','audio/autumn_cut2.wav','audio/autumn1.wav'],
+})
+
 </script>
 </html>
