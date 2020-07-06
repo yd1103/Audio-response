@@ -58,7 +58,10 @@
 
     var partQs = {
         type: 'survey-text',
-        questions: ["Participant Number", "Experimenter", "Test Room"]
+        questions: [
+      {prompt: 'How old are you?', columns: 3, required: true, name: 'Age'},
+      {prompt: 'name?', placeholder: '请写中文全名', columns: 50, required: true, name: 'Name'}
+    ],
     };
     timeline.push(partQs);
     var participantNo = prompt("Enter Participant Number:");
