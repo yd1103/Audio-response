@@ -24,16 +24,34 @@ jsPsych.plugins["image-button-response"] = (function() {
         default: undefined,
         description: 'The image to be displayed'
       },
+      stimulus_height: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Image height',
+        default: null,
+        description: 'Set the image height in pixels'
+      },
+      stimulus_width: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Image width',
+        default: null,
+        description: 'Set the image width in pixels'
+      },
+      maintain_aspect_ratio: {
+        type: jsPsych.plugins.parameterType.BOOL,
+        pretty_name: 'Maintain aspect ratio',
+        default: true,
+        description: 'Maintain the aspect ratio after setting width or height'
+      },
       choices: {
-        type: jsPsych.plugins.parameterType.KEYCODE,
+        type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Choices',
-        default: [],
+        default: undefined,
         array: true,
         description: 'The labels for the buttons.'
       },
       button_html: {
         type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: 'Button html',
+        pretty_name: 'Button HTML',
         default: '<button class="jspsych-btn">%choice%</button>',
         array: true,
         description: 'The html of the button. Can create own style.'
@@ -41,19 +59,19 @@ jsPsych.plugins["image-button-response"] = (function() {
       prompt: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Prompt',
-        default: '',
+        default: null,
         description: 'Any content here will be displayed under the button.'
       },
       stimulus_duration: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Stimulus duration',
-        default: -1,
+        default: null,
         description: 'How long to hide the stimulus.'
       },
       trial_duration: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Trial duration',
-        default: -1,
+        default: null,
         description: 'How long to show the trial.'
       },
       margin_vertical: {
@@ -67,7 +85,7 @@ jsPsych.plugins["image-button-response"] = (function() {
         pretty_name: 'Margin horizontal',
         default: '8px',
         description: 'The horizontal margin of the button.'
-      },  
+      },
       response_ends_trial: {
         type: jsPsych.plugins.parameterType.BOOL,
         pretty_name: 'Response ends trial',
@@ -79,15 +97,21 @@ jsPsych.plugins["image-button-response"] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
-    if(typeof trial.choices === 'undefined'){
-      console.error('Required parameter "choices" missing in image-button-response');
-    }
-    if(typeof trial.stimulus === 'undefined'){
-      console.error('Required parameter "stimulus" missing in image-button-response');
-    }
-
     // display stimulus
-    var html = '<img src="'+trial.stimulus+'" id="jspsych-image-button-response-stimulus"></img>';
+    var html = '<img src="'+trial.stimulus+'" id="jspsych-image-button-response-stimulus" style="';
+    if(trial.stimulus_height !== null){
+      html += 'height:'+trial.stimulus_height+'px; '
+      if(trial.stimulus_width == null && trial.maintain_aspect_ratio){
+        html += 'width: auto; ';
+      }
+    }
+    if(trial.stimulus_width !== null){
+      html += 'width:'+trial.stimulus_width+'px; '
+      if(trial.stimulus_height == null && trial.maintain_aspect_ratio){
+        html += 'height: auto; ';
+      }
+    }
+    html +='"></img>';
 
     //display buttons
     var buttons = [];
@@ -102,37 +126,42 @@ jsPsych.plugins["image-button-response"] = (function() {
         buttons.push(trial.button_html);
       }
     }
-    html += '<div id="jspsych-image-button-response-btngroup"></div>';
-    display_element.innerHTML=html;
+    html += '<div id="jspsych-image-button-response-btngroup">';
+
     for (var i = 0; i < trial.choices.length; i++) {
       var str = buttons[i].replace(/%choice%/g, trial.choices[i]);
-      display_element.querySelector('#jspsych-image-button-response-btngroup').insertAdjacentHTML('beforeend',
-        '<div class="jspsych-image-button-response-button" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'" id="jspsych-image-button-response-button-' + i +'" data-choice="'+i+'">'+str+'</div>');
+      html += '<div class="jspsych-image-button-response-button" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'" id="jspsych-image-button-response-button-' + i +'" data-choice="'+i+'">'+str+'</div>';
+    }
+    html += '</div>';
+
+    //show prompt if there is one
+    if (trial.prompt !== null) {
+      html += trial.prompt;
+    }
+
+    display_element.innerHTML = html;
+
+    // start timing
+    var start_time = performance.now();
+
+    for (var i = 0; i < trial.choices.length; i++) {
       display_element.querySelector('#jspsych-image-button-response-button-' + i).addEventListener('click', function(e){
         var choice = e.currentTarget.getAttribute('data-choice'); // don't use dataset for jsdom compatibility
         after_response(choice);
       });
     }
 
-    //show prompt if there is one
-    if (trial.prompt !== "") {
-      display_element.insertAdjacentHTML('beforeend', trial.prompt);
-    }
-
     // store response
     var response = {
-      rt: -1,
-      button: -1
+      rt: null,
+      button: null
     };
-
-    // start time
-    var start_time = 0;
 
     // function to handle responses by the subject
     function after_response(choice) {
 
       // measure rt
-      var end_time = Date.now();
+      var end_time = performance.now();
       var rt = end_time - start_time;
       response.button = choice;
       response.rt = rt;
@@ -173,18 +202,17 @@ jsPsych.plugins["image-button-response"] = (function() {
       jsPsych.finishTrial(trial_data);
     };
 
-    // start timing
-    start_time = Date.now();
+
 
     // hide image if timing is set
-    if (trial.stimulus_duration > 0) {
+    if (trial.stimulus_duration !== null) {
       jsPsych.pluginAPI.setTimeout(function() {
         display_element.querySelector('#jspsych-image-button-response-stimulus').style.visibility = 'hidden';
       }, trial.stimulus_duration);
     }
 
     // end trial if time limit is set
-    if (trial.trial_duration > 0) {
+    if (trial.trial_duration !== null) {
       jsPsych.pluginAPI.setTimeout(function() {
         end_trial();
       }, trial.trial_duration);

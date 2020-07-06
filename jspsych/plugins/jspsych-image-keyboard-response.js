@@ -21,9 +21,27 @@ jsPsych.plugins["image-keyboard-response"] = (function() {
     parameters: {
       stimulus: {
         type: jsPsych.plugins.parameterType.IMAGE,
-        pretty_name: 'stimulus',
+        pretty_name: 'Stimulus',
         default: undefined,
         description: 'The image to be displayed'
+      },
+      stimulus_height: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Image height',
+        default: null,
+        description: 'Set the image height in pixels'
+      },
+      stimulus_width: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Image width',
+        default: null,
+        description: 'Set the image width in pixels'
+      },
+      maintain_aspect_ratio: {
+        type: jsPsych.plugins.parameterType.BOOL,
+        pretty_name: 'Maintain aspect ratio',
+        default: true,
+        description: 'Maintain the aspect ratio after setting width or height'
       },
       choices: {
         type: jsPsych.plugins.parameterType.KEYCODE,
@@ -35,19 +53,19 @@ jsPsych.plugins["image-keyboard-response"] = (function() {
       prompt: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Prompt',
-        default: '',
+        default: null,
         description: 'Any content here will be displayed below the stimulus.'
       },
       stimulus_duration: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Stimulus duration',
-        default: -1,
+        default: null,
         description: 'How long to hide the stimulus.'
       },
       trial_duration: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Trial duration',
-        default: -1,
+        default: null,
         description: 'How long to show trial before it ends.'
       },
       response_ends_trial: {
@@ -61,18 +79,34 @@ jsPsych.plugins["image-keyboard-response"] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
-    var new_html = '<img src="'+trial.stimulus+'" id="jspsych-image-keyboard-response-stimulus"></img>';
+    // display stimulus
+    var html = '<img src="'+trial.stimulus+'" id="jspsych-image-keyboard-response-stimulus" style="';
+    if(trial.stimulus_height !== null){
+      html += 'height:'+trial.stimulus_height+'px; '
+      if(trial.stimulus_width == null && trial.maintain_aspect_ratio){
+        html += 'width: auto; ';
+      }
+    }
+    if(trial.stimulus_width !== null){
+      html += 'width:'+trial.stimulus_width+'px; '
+      if(trial.stimulus_height == null && trial.maintain_aspect_ratio){
+        html += 'height: auto; ';
+      }
+    }
+    html +='"></img>';
 
     // add prompt
-    new_html += trial.prompt;
+    if (trial.prompt !== null){
+      html += trial.prompt;
+    }
 
-    // draw
-    display_element.innerHTML = new_html;
+    // render
+    display_element.innerHTML = html;
 
     // store response
     var response = {
-      rt: -1,
-      key: -1
+      rt: null,
+      key: null
     };
 
     // function to end trial when it is time
@@ -108,7 +142,7 @@ jsPsych.plugins["image-keyboard-response"] = (function() {
       display_element.querySelector('#jspsych-image-keyboard-response-stimulus').className += ' responded';
 
       // only record the first response
-      if (response.key == -1) {
+      if (response.key == null) {
         response = info;
       }
 
@@ -122,21 +156,21 @@ jsPsych.plugins["image-keyboard-response"] = (function() {
       var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
         valid_responses: trial.choices,
-        rt_method: 'date',
+        rt_method: 'performance',
         persist: false,
         allow_held_key: false
       });
     }
 
     // hide stimulus if stimulus_duration is set
-    if (trial.stimulus_duration > 0) {
+    if (trial.stimulus_duration !== null) {
       jsPsych.pluginAPI.setTimeout(function() {
         display_element.querySelector('#jspsych-image-keyboard-response-stimulus').style.visibility = 'hidden';
       }, trial.stimulus_duration);
     }
 
     // end trial if trial_duration is set
-    if (trial.trial_duration > 0) {
+    if (trial.trial_duration !== null) {
       jsPsych.pluginAPI.setTimeout(function() {
         end_trial();
       }, trial.trial_duration);

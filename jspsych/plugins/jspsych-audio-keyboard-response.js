@@ -34,13 +34,13 @@ jsPsych.plugins["audio-keyboard-response"] = (function() {
       prompt: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Prompt',
-        default: '',
+        default: null,
         description: 'Any content here will be displayed below the stimulus.'
       },
       trial_duration: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Trial duration',
-        default: -1,
+        default: null,
         description: 'The maximum duration to wait for a response.'
       },
       response_ends_trial: {
@@ -84,14 +84,14 @@ jsPsych.plugins["audio-keyboard-response"] = (function() {
     }
 
     // show prompt if there is one
-    if (trial.prompt !== "") {
+    if (trial.prompt !== null) {
       display_element.innerHTML = trial.prompt;
     }
 
     // store response
     var response = {
-      rt: -1,
-      key: -1
+      rt: null,
+      key: null
     };
 
     // function to end trial when it is time
@@ -114,8 +114,11 @@ jsPsych.plugins["audio-keyboard-response"] = (function() {
       jsPsych.pluginAPI.cancelAllKeyboardResponses();
 
       // gather the data to store for the trial
+      if(context !== null && response.rt !== null){
+        response.rt = Math.round(response.rt * 1000);
+      }
       var trial_data = {
-        "rt": context !== null ? response.rt * 1000 : response.rt,
+        "rt": response.rt,
         "stimulus": trial.stimulus,
         "key_press": response.key
       };
@@ -131,7 +134,7 @@ jsPsych.plugins["audio-keyboard-response"] = (function() {
     var after_response = function(info) {
 
       // only record the first response
-      if (response.key == -1) {
+      if (response.key == null) {
         response = info;
       }
 
@@ -142,7 +145,7 @@ jsPsych.plugins["audio-keyboard-response"] = (function() {
 
     // start audio
     if(context !== null){
-      startTime = context.currentTime + 0.1;
+      startTime = context.currentTime;
       source.start(startTime);
     } else {
       audio.play();
@@ -163,14 +166,14 @@ jsPsych.plugins["audio-keyboard-response"] = (function() {
       var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
         valid_responses: trial.choices,
-        rt_method: 'date',
+        rt_method: 'performance',
         persist: false,
         allow_held_key: false
       });
     }
 
     // end trial if time limit is set
-    if (trial.trial_duration > 0) {
+    if (trial.trial_duration !== null) {
       jsPsych.pluginAPI.setTimeout(function() {
         end_trial();
       }, trial.trial_duration);

@@ -84,12 +84,12 @@ jsPsych.plugins["visual-search-circle"] = (function() {
         type: jsPsych.plugins.parameterType.KEYCODE,
         pretty_name: 'Target absent key',
         default: 'f',
-        description: 'The key to press if the the target is not present in the search array.'
+        description: 'The key to press if the target is not present in the search array.'
       },
       trial_duration: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Trial duration',
-        default: -1,
+        default: null,
         description: 'The maximum duration to wait for a response.'
       },
       fixation_duration: {
@@ -169,10 +169,6 @@ jsPsych.plugins["visual-search-circle"] = (function() {
 
         paper.innerHTML += "<img src='"+to_present[i]+"' style='position: absolute; top:"+display_locs[i][0]+"px; left:"+display_locs[i][1]+"px; width:"+trial.target_size[0]+"px; height:"+trial.target_size[1]+"px;'></img>";
 
-        //var img = paper.image(to_present[i], display_locs[i][0], display_locs[i][1], trial.target_size[0], trial.target_size[1]);
-
-        //search_array_images.push(img);
-
       }
 
       var trial_over = false;
@@ -181,11 +177,11 @@ jsPsych.plugins["visual-search-circle"] = (function() {
 
         trial_over = true;
 
-        var correct = 0;
+        var correct = false;
 
-        if (info.key == trial.target_present_key && trial.target_present ||
-          info.key == trial.target_absent_key && !trial.target_present) {
-          correct = 1;
+        if (jsPsych.pluginAPI.compareKeys(info.key,trial.target_present_key) && trial.target_present ||
+            jsPsych.pluginAPI.compareKeys(info.key,trial.target_absent_key) && !trial.target_present) {
+          correct = true;
         }
 
         clear_display();
@@ -199,48 +195,31 @@ jsPsych.plugins["visual-search-circle"] = (function() {
       key_listener = jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
         valid_responses: valid_keys,
-        rt_method: 'date',
+        rt_method: 'performance',
         persist: false,
         allow_held_key: false
       });
 
-      if (trial.trial_duration > -1) {
+      if (trial.trial_duration !== null) {
 
-        if (trial.trial_duration == 0) {
+        jsPsych.pluginAPI.setTimeout(function() {
+
           if (!trial_over) {
 
             jsPsych.pluginAPI.cancelKeyboardResponse(key_listener);
 
             trial_over = true;
 
-            var rt = -1;
+            var rt = null;
             var correct = 0;
-            var key_press = -1;
+            var key_press = null;
 
             clear_display();
 
             end_trial(rt, correct, key_press);
           }
-        } else {
+        }, trial.trial_duration);
 
-          jsPsych.pluginAPI.setTimeout(function() {
-
-            if (!trial_over) {
-
-              jsPsych.pluginAPI.cancelKeyboardResponse(key_listener);
-
-              trial_over = true;
-
-              var rt = -1;
-              var correct = 0;
-              var key_press = -1;
-
-              clear_display();
-
-              end_trial(rt, correct, key_press);
-            }
-          }, trial.trial_duration);
-        }
       }
 
       function clear_display() {

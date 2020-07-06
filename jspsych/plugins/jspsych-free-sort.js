@@ -51,7 +51,7 @@ jsPsych.plugins['free-sort'] = (function() {
       prompt: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Prompt',
-        default: '',
+        default: null,
         description: 'It can be used to provide a reminder about the action the subject is supposed to take.'
       },
       prompt_location: {
@@ -72,11 +72,11 @@ jsPsych.plugins['free-sort'] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
-    var start_time = (new Date()).getTime();
+    var start_time = performance.now();
 
     var html = "";
     // check if there is a prompt and if it is shown above
-    if (trial.prompt && trial.prompt_location == "above") {
+    if (trial.prompt !== null && trial.prompt_location == "above") {
       html += trial.prompt;
     }
 
@@ -87,7 +87,7 @@ jsPsych.plugins['free-sort'] = (function() {
       '></div>';
 
     // check if prompt exists and if it is shown below
-    if (trial.prompt && trial.prompt_location == "below") {
+    if (trial.prompt !== null && trial.prompt_location == "below") {
       html += trial.prompt;
     }
 
@@ -150,7 +150,7 @@ jsPsych.plugins['free-sort'] = (function() {
 
     display_element.querySelector('#jspsych-free-sort-done-btn').addEventListener('click', function(){
 
-      var end_time = (new Date()).getTime();
+      var end_time = performance.now();
       var rt = end_time - start_time;
       // gather data
       // get final position of all objects
@@ -159,8 +159,8 @@ jsPsych.plugins['free-sort'] = (function() {
       for(var i=0; i<matches.length; i++){
         final_locations.push({
           "src": matches[i].dataset.src,
-          "x": matches[i].style.position.left,
-          "y": matches[i].style.position.top
+          "x": parseInt(matches[i].style.left),
+          "y": parseInt(matches[i].style.top)
         });
       }
 

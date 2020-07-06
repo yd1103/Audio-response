@@ -12,18 +12,18 @@ jsPsych.plugins['same-different-image'] = (function() {
 
   var plugin = {};
 
-  jsPsych.pluginAPI.registerPreload('same-different', 'stimuli', 'image')
+  jsPsych.pluginAPI.registerPreload('same-different-image', 'stimuli', 'image')
 
   plugin.info = {
     name: 'same-different-image',
     description: '',
     parameters: {
       stimuli: {
-        type: jsPsych.plugins.parameterType.HTML_STRING,
+        type: jsPsych.plugins.parameterType.IMAGE,
         pretty_name: 'Stimuli',
         default: undefined,
         array: true,
-        description: 'The image to be displayed.'
+        description: 'The images to be displayed.'
       },
       answer: {
         type: jsPsych.plugins.parameterType.SELECT,
@@ -65,7 +65,7 @@ jsPsych.plugins['same-different-image'] = (function() {
       prompt: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Prompt',
-        default: '',
+        default: null,
         description: 'Any content here will be displayed below the stimulus.'
       }
     }
@@ -88,7 +88,7 @@ jsPsych.plugins['same-different-image'] = (function() {
       jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: afterKeyboardResponse,
         valid_responses: trial.advance_key,
-        rt_method: 'date',
+        rt_method: 'performance',
         persist: false,
         allow_held_key: false
       });
@@ -104,18 +104,18 @@ jsPsych.plugins['same-different-image'] = (function() {
 
     function showSecondStim() {
 
-      display_element.innerHTML += '<img class="jspsych-same-different-stimulus" src="'+trial.stimuli[1]+'"></img>';
+      var html = '<img class="jspsych-same-different-stimulus" src="'+trial.stimuli[1]+'"></img>';
+      //show prompt
+      if (trial.prompt !== null) {
+        html += trial.prompt;
+      }
 
+      display_element.innerHTML = html;
 
       if (trial.second_stim_duration > 0) {
         jsPsych.pluginAPI.setTimeout(function() {
           display_element.querySelector('.jspsych-same-different-stimulus').style.visibility = 'hidden';
         }, trial.second_stim_duration);
-      }
-
-      //show prompt here
-      if (trial.prompt !== "") {
-        display_element.innerHTML += trial.prompt;
       }
 
       var after_response = function(info) {
@@ -156,7 +156,7 @@ jsPsych.plugins['same-different-image'] = (function() {
       jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
         valid_responses: [trial.same_key, trial.different_key],
-        rt_method: 'date',
+        rt_method: 'performance',
         persist: false,
         allow_held_key: false
       });

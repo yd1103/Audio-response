@@ -38,7 +38,7 @@ jsPsych.plugins["categorize-animation"] = (function() {
       text_answer: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Text answer',
-        default: '',
+        default: null,
         description: 'Text to describe correct answer.'
       },
       correct_text: {
@@ -80,7 +80,7 @@ jsPsych.plugins["categorize-animation"] = (function() {
       prompt: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Prompt',
-        default: '',
+        default: null,
         description: 'Any content here will be displayed below the stimulus.'
       },
     }
@@ -96,9 +96,6 @@ jsPsych.plugins["categorize-animation"] = (function() {
     var responded = false;
     var timeoutSet = false;
     var correct;
-
-
-    var startTime = (new Date()).getTime();
 
     // show animation
     var animate_interval = setInterval(function() {
@@ -120,14 +117,14 @@ jsPsych.plugins["categorize-animation"] = (function() {
 
       if (!responded && trial.allow_response_before_complete) {
         // in here if the user can respond before the animation is done
-        if (trial.prompt !== "") {
+        if (trial.prompt !== null) {
           display_element.innerHTML += trial.prompt;
         }
       } else if (!responded) {
         // in here if the user has to wait to respond until animation is done.
         // if this is the case, don't show the prompt until the animation is over.
         if (!showAnimation) {
-          if (trial.prompt !== "") {
+          if (trial.prompt !== null) {
             display_element.innerHTML += trial.prompt;
           }
         }
@@ -187,7 +184,7 @@ jsPsych.plugins["categorize-animation"] = (function() {
     keyboard_listener = jsPsych.pluginAPI.getKeyboardResponse({
       callback_function: after_response,
       valid_responses: trial.choices,
-      rt_method: 'date',
+      rt_method: 'performance',
       persist: true,
       allow_held_key: false
     });

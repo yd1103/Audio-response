@@ -8,12 +8,12 @@
  *
  */
 
-jsPsych.plugins['same-different-image'] = (function() {
+jsPsych.plugins['same-different-html'] = (function() {
 
   var plugin = {};
 
   plugin.info = {
-    name: 'same-different-image',
+    name: 'same-different-html',
     description: '',
     parameters: {
       stimuli: {
@@ -63,7 +63,7 @@ jsPsych.plugins['same-different-image'] = (function() {
       prompt: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Prompt',
-        default: '',
+        default: null,
         description: 'Any content here will be displayed below the stimulus.'
       }
     }
@@ -86,7 +86,7 @@ jsPsych.plugins['same-different-image'] = (function() {
       jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: afterKeyboardResponse,
         valid_responses: trial.advance_key,
-        rt_method: 'date',
+        rt_method: 'performance',
         persist: false,
         allow_held_key: false
       });
@@ -102,8 +102,12 @@ jsPsych.plugins['same-different-image'] = (function() {
 
     function showSecondStim() {
 
-      display_element.innerHTML += '<div class="jspsych-same-different-stimulus">'+trial.stimuli[1]+'</div>';
-
+      var html = '<div class="jspsych-same-different-stimulus">'+trial.stimuli[1]+'</div>';
+      //show prompt here
+      if (trial.prompt !== null) {
+        html += trial.prompt;
+      }
+      display_element.innerHTML = html;
 
       if (trial.second_stim_duration > 0) {
         jsPsych.pluginAPI.setTimeout(function() {
@@ -111,10 +115,7 @@ jsPsych.plugins['same-different-image'] = (function() {
         }, trial.second_stim_duration);
       }
 
-      //show prompt here
-      if (trial.prompt !== "") {
-        display_element.innerHTML += trial.prompt;
-      }
+
 
       var after_response = function(info) {
 
@@ -154,7 +155,7 @@ jsPsych.plugins['same-different-image'] = (function() {
       jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
         valid_responses: [trial.same_key, trial.different_key],
-        rt_method: 'date',
+        rt_method: 'performance',
         persist: false,
         allow_held_key: false
       });
